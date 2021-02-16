@@ -7,9 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
-
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	
 	"github.com/bimosyah/go-test/api/models"
 )
 
