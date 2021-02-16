@@ -14,7 +14,7 @@ import (
 type User struct {
 	ID        	uint32    `gorm:"primary_key;auto_increment" json:"id"`
 	Username  	string    `gorm:"size:20;not null;unique" json:"username"`
-	Password  	string    `gorm:"size:255;not null;unique" json:"password"`
+	Password  	string    `gorm:"size:100;not null;" json:"password"`
 	Namalengkap string    `gorm:"size:100;not null;" json:"namalengkap"`
 	Foto 		string    `gorm:"size:100;not null;" json:"foto"`
 	CreatedAt 	time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
@@ -41,9 +41,11 @@ func (u *User) BeforeSave() error {
 func (u *User) Prepare() {
 	u.ID = 0
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
+	u.Namalengkap = html.EscapeString(strings.TrimSpace(u.Namalengkap))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
+
 
 func (u *User) Validate(action string) error {
 	switch strings.ToLower(action) {
@@ -53,6 +55,12 @@ func (u *User) Validate(action string) error {
 		}
 		if u.Password == "" {
 			return errors.New("Required Password")
+		}
+		if u.Namalengkap == "" {
+			return errors.New("Required Nama Lengkap")
+		}
+		if u.Foto == "" {
+			return errors.New("Required Foto")
 		}
 		return nil
 	case "login":
@@ -67,6 +75,12 @@ func (u *User) Validate(action string) error {
 		}
 		if u.Password == "" {
 			return errors.New("Required Password")
+		}
+		if u.Namalengkap == "" {
+			return errors.New("Required Nama Lengkap")
+		}
+		if u.Foto == "" {
+			return errors.New("Required Foto")
 		}
 		return nil
 	}
@@ -115,6 +129,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 		map[string]interface{}{
 			"password":  u.Password,
 			"username":  u.Username,
+			"namalengkap":  u.Namalengkap,
+			"foto":  u.Foto,
 			"update_at": time.Now(),
 		},
 	)
